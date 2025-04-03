@@ -12,8 +12,6 @@
 
 // export default colors;
 
-
-
 const colors = {
   brandBlue: '#205084', // Primary Brand Blue
   lightBlue: '#3b7bbf', // Secondary Light Blue
