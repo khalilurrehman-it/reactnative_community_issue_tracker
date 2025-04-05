@@ -7,28 +7,23 @@ const SplashScreen = () => {
 
   // Navigate to Home screen after 3 seconds
   useEffect(() => {
-    const timer = setTimeout(() => {
-      navigation.replace('HomeScreen'); // Replace with your main screen name
-    }, 3000); // 3000 ms = 3 seconds
-
-    // Cleanup timer on unmount
-    return () => clearTimeout(timer);
-  }, [navigation]);
+    navigation.replace('HomeScreen'); // Instantly go to Home
+  }, []);
 
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
-      {/* <Image
-        source={require('./assets/logo.png')} // Your app logo
-        style={styles.logo}
-      /> */}
       <Image
+        source={require('../../assets/images/justice_path_logo.png')} // Your app logo
+        style={styles.logo}
+      />
+      {/* <Image
         source={{
           uri: 'https://images.unsplash.com/photo-1622722080795-b6c152e13793?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZGlydHklMjBzb2NpZXR5fGVufDB8MXwwfHx8MA%3D%3D',
         }}
         style={styles.logo}
-      />
-      <Text style={styles.appName}>IssueReporter</Text>
+      /> */}
+      <Text style={styles.appName}>Justice Path</Text>
     </View>
   );
 };
@@ -44,6 +39,7 @@ const styles = StyleSheet.create({
     width: 150,
     height: 150,
     marginBottom: 20,
+    borderRadius: 5,
   },
   appName: {
     fontSize: 24,
