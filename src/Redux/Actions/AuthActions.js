@@ -61,6 +61,8 @@ export const logout = () => {
 // Action for checking user login status
 export const checkUserLoginStatus = () => {
   return dispatch => {
+    dispatch({type: 'AUTH_CHECK_STARTED'}); // 👈 tell reducer to wait
+
     const unsubscribe = onAuthStateChanged(auth, user => {
       if (user) {
         // User is logged in

@@ -10,52 +10,101 @@ import {
 import {useDispatch, useSelector} from 'react-redux';
 import {signup} from '../../Redux/Actions/AuthActions';
 import colors from '../../theme/colors';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const SignUpScreen = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [message, setMessage] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const dispatch = useDispatch();
   const {loading} = useSelector(state => state.auth);
 
   const getMessageStyle = () => {
-    if (message.includes('successful')) {
-      return {color: 'green'}; // success color
-    } else if (message.includes('failed')) {
-      return {color: 'red'}; // error color
+    if (message.toLowerCase().includes('successful')) {
+      return {color: 'green'};
+    } else {
+      return {color: 'red'};
     }
-    return {color: 'red'}; // default color
   };
 
-  const handleSignup = () => {
+  // const handleSignup = () => {
+  //   setMessage('');
+
+  //   if (!email || !password || !confirmPassword) {
+  //     setMessage('Please fill in all fields.');
+  //     return;
+  //   }
+
+  //   if (password !== confirmPassword) {
+  //     setMessage('Passwords do not match.');
+  //     return;
+  //   }
+
+  //   if (password.length < 6) {
+  //     setMessage('Password must be at least 6 characters long.');
+  //     return;
+  //   }
+
+  //   dispatch(signup(email, password))
+  //     .then(() => {
+  //       setMessage('Signup successful! Redirecting to login...');
+  //       setTimeout(() => {
+  //         navigation.navigate('Login');
+  //       }, 1500);
+  //     })
+  //     .catch(err => {
+  //       if (err.code === 'auth/email-already-in-use') {
+  //         setMessage('This email is already registered.');
+  //       } else if (err.code === 'auth/invalid-email') {
+  //         setMessage('Invalid email format.');
+  //       } else {
+  //         setMessage('Signup failed. Please try again.');
+  //       }
+  //     });
+  // };
+
+  const handleSignup = async () => {
     setMessage('');
 
-    if (!email || !password) {
-      setMessage('Please enter both email and password');
+    if (!email || !password || !confirmPassword) {
+      setMessage('Please fill in all fields.');
       return;
     }
 
-    dispatch(signup(email, password))
-      .then(() => {
-        setMessage('Signup successful! Redirecting to login...');
+    if (password !== confirmPassword) {
+      setMessage('Passwords do not match.');
+      return;
+    }
+
+    if (password.length < 6) {
+      setMessage('Password must be at least 6 characters long.');
+      return;
+    }
+
+    try {
+      await dispatch(signup(email, password));
+      setMessage('Signup successful! Redirecting to login...');
+      setTimeout(() => {
         navigation.navigate('Login');
-      })
-      .catch(err => {
-        if (err.code === 'auth/email-already-in-use') {
-          setMessage('This email is already registered.');
-        } else {
-          setMessage('Signup failed. Please try again.');
-        }
-      });
+      }, 1500);
+    } catch (err) {
+      if (err.code === 'auth/email-already-in-use') {
+        setMessage('This email is already registered.');
+      } else if (err.code === 'auth/invalid-email') {
+        setMessage('Invalid email format.');
+      } else {
+        setMessage('Signup failed. Please try again.');
+      }
+    }
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Sign Up</Text>
-      {/* {message !== '' && <Text style={styles.message}>{message}</Text>} */}
+
       <Text style={[styles.message, getMessageStyle()]}>{message}</Text>
 
       <TextInput
@@ -64,6 +113,8 @@ const SignUpScreen = ({navigation}) => {
         placeholderTextColor={colors.lightGrayBackground}
         value={email}
         onChangeText={setEmail}
+        keyboardType="email-address"
+        autoCapitalize="none"
       />
 
       <View style={styles.passwordContainer}>
@@ -78,11 +129,27 @@ const SignUpScreen = ({navigation}) => {
         <TouchableOpacity
           onPress={() => setShowPassword(!showPassword)}
           style={styles.eyeIcon}>
-          <Ionicons
-            name={showPassword ? 'eye-off-outline' : 'eye-outline'}
-            size={24}
-            color={colors.brandBlue}
-          />
+          <Text style={{color: colors.brandBlue, fontSize: 16, marginLeft: 5}}>
+            {showPassword ? 'Hide' : 'Show'}
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.passwordContainer}>
+        <TextInput
+          style={[styles.input, {flex: 1, marginBottom: 0}]}
+          placeholder="Re-enter Password"
+          placeholderTextColor={colors.lightGrayBackground}
+          secureTextEntry={!showConfirmPassword}
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+        />
+        <TouchableOpacity
+          onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+          style={styles.eyeIcon}>
+          <Text style={{color: colors.brandBlue, fontSize: 16, marginLeft: 5}}>
+            {showConfirmPassword ? 'Hide' : 'Show'}
+          </Text>
         </TouchableOpacity>
       </View>
 
