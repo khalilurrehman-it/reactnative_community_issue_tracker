@@ -7,13 +7,19 @@ import {
   StatusBar,
   ScrollView,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';  
 import colors from '../../theme/colors';
+import HomeScreenIssueReporter from './HomeScreenIssueReporter';
 
 const HomeScreen = () => {
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor={colors.brandBlue} barStyle="light-content" />
       <ScrollView contentContainerStyle={styles.scrollView}>
+        <HomeScreenIssueReporter />
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <Icon name="home" size={36} color="blue" />
+        </View>
         <Text style={styles.header}>🎨 Color Preview</Text>
         <Image
           source={require('../../assets/images/justice_path_logo.png')} // Your app logo
