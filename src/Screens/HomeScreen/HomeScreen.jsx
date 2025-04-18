@@ -1,45 +1,100 @@
+// import React from 'react';
+// import {
+//   StyleSheet,
+//   StatusBar,
+//   ScrollView,
+// } from 'react-native';
+// import {SafeAreaView} from 'react-native-safe-area-context';
+// import colors from '../../theme/colors';
+// import HomeScreenIssueReporter from './HomeScreenIssueReporter';
+
+// const HomeScreen = () => {
+//   return (
+//     <SafeAreaView style={styles.container}>
+//       <StatusBar backgroundColor={colors.brandBlue} barStyle="light-content" />
+//       <ScrollView contentContainerStyle={styles.scrollView}>
+//         <HomeScreenIssueReporter />
+//       </ScrollView>
+//     </SafeAreaView>
+//   );
+// };
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     backgroundColor: colors.lightGrayBackground,
+//   },
+//   scrollView: {
+//     alignItems: 'center',
+//     paddingVertical: 20,
+//   },
+// });
+
+// export default HomeScreen;
+
 import React from 'react';
 import {
   View,
   Text,
-  Image,
   StyleSheet,
+  TouchableOpacity,
   StatusBar,
   ScrollView,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';  
+import Icon from 'react-native-vector-icons/Ionicons';
+import {useNavigation} from '@react-navigation/native';
 import colors from '../../theme/colors';
-import HomeScreenIssueReporter from './HomeScreenIssueReporter';
 
 const HomeScreen = () => {
+  const navigation = useNavigation();
+
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor={colors.brandBlue} barStyle="light-content" />
       <ScrollView contentContainerStyle={styles.scrollView}>
-        <HomeScreenIssueReporter />
-        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-          <Icon name="home" size={36} color="blue" />
-        </View>
-        <Text style={styles.header}>🎨 Color Preview</Text>
-        <Image
-          source={require('../../assets/images/justice_path_logo.png')} // Your app logo
-          style={styles.logo}
-        />
-        {Object.entries(colors).map(([name, hex]) => (
-          <View key={name} style={[styles.colorBox, {backgroundColor: hex}]}>
-            <Text
-              style={[
-                styles.colorText,
-                {
-                  color: name.includes('background')
-                    ? colors.darkGrayText
-                    : colors.whiteText,
-                },
-              ]}>
-              {name} - {hex}
-            </Text>
-          </View>
-        ))}
+        {/* Issue Report */}
+        <TouchableOpacity
+          style={styles.card}
+          onPress={() => navigation.navigate('IssueReporterScreen')}>
+          <Icon
+            name="bug-outline"
+            size={28} // Adjusted icon size for consistency
+            color={colors.brandBlue}
+            style={styles.icon}
+          />
+          <Text style={styles.title}>Issue Report</Text>
+          <Text style={styles.description}>
+            Report a technical issue or bug you’re facing.
+          </Text>
+        </TouchableOpacity>
+
+        {/* Notice Board */}
+        <TouchableOpacity style={styles.card}>
+          <Icon
+            name="clipboard-outline"
+            size={28} // Adjusted icon size for consistency
+            color={colors.brandBlue}
+            style={styles.icon}
+          />
+          <Text style={styles.title}>Notice Board</Text>
+          <Text style={styles.description}>
+            Stay updated with the latest notices and announcements.
+          </Text>
+        </TouchableOpacity>
+
+        {/* Alert */}
+        <TouchableOpacity style={styles.card}>
+          <Icon
+            name="alert-circle-outline"
+            size={28} // Adjusted icon size for consistency
+            color={colors.brandBlue}
+            style={styles.icon}
+          />
+          <Text style={styles.title}>Alert</Text>
+          <Text style={styles.description}>
+            Urgent alerts and critical messages will appear here.
+          </Text>
+        </TouchableOpacity>
       </ScrollView>
     </View>
   );
@@ -54,28 +109,32 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 20,
   },
-  header: {
-    fontSize: 24,
-    fontWeight: 'bold',
+  card: {
+    backgroundColor: colors.whiteText,
+    borderRadius: 10,
+    padding: 16,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    shadowOffset: {width: 0, height: 2},
+    elevation: 4,
+    marginBottom: 16, // Added consistent margin between cards
+    width: '90%', // Ensures consistent width for all cards
+    alignItems: 'center', // Centers content inside the card
+  },
+  icon: {
+    marginBottom: 12, // Adjusted margin for better spacing
+  },
+  title: {
+    fontSize: 18, // Consistent font size
+    fontWeight: '600', // Consistent font weight
+    marginBottom: 6, // Consistent spacing from description
     color: colors.brandBlue,
-    marginBottom: 50,
   },
-  colorBox: {
-    width: '90%',
-    paddingVertical: 15,
-    borderRadius: 8,
-    marginVertical: 8,
-    alignItems: 'center',
-  },
-  colorText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  logo: {
-    width: 150,
-    height: 150,
-    marginBottom: 20,
-    borderRadius: 5,
+  description: {
+    fontSize: 14, // Consistent font size
+    color: '#555', // Consistent color for text
+    textAlign: 'center', // Align text to center for better look
   },
 });
 
