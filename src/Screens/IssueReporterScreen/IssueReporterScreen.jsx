@@ -8,15 +8,15 @@ import {
   Alert,
   ScrollView,
 } from 'react-native';
-import {useSelector} from 'react-redux';
 import {db} from '../../firebaseConfig';
 import {collection, addDoc, serverTimestamp} from 'firebase/firestore';
 import {getAuth} from 'firebase/auth';
 import colors from '../../theme/colors';
 
 const IssueReporterScreen = () => {
+  const [loading, setLoading] = useState(false);
   const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
+  // const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [title, setTitle] = useState('');
   const [details, setDetails] = useState('');
@@ -29,26 +29,40 @@ const IssueReporterScreen = () => {
     return;
   }
 
-  console.log('User UID:', currentUser.uid); // This should print a real UID
+  // console.log('User UID:', currentUser.uid); // This should print a real UID
 
   //   const uid = useSelector(state => state.auth.userId); // assuming stored in redux
   const uid = currentUser?.uid;
 
   const handleSubmit = async () => {
-    if (!name || !email || !phone || !title || !details) {
+    if (!name || !phone || !title || !details) {
       Alert.alert('Please fill all the fields');
+      console.error('All fields are not filled');
       return;
     }
 
     if (!uid) {
       Alert.alert('User ID not found.');
+      console.error('User ID not found.');
       return;
     }
 
+    setLoading(true); // Set loading to true before submitting
+
     try {
-      await addDoc(collection(db, 'users', uid, 'issues'), {
+      console.log('Submitting issue...');
+      console.log({
         name,
-        email,
+        email: currentUser.email.toLowerCase(),
+        phone,
+        title,
+        details,
+      });
+
+      // Log data before trying to submit to Firestore
+      const docRef = await addDoc(collection(db, 'users', uid, 'issues'), {
+        name,
+        email: currentUser.email.toLowerCase(),
         phone,
         title,
         details,
@@ -56,15 +70,18 @@ const IssueReporterScreen = () => {
         createdAt: serverTimestamp(),
       });
 
+      // Check if docRef is valid
+      console.log('Document written with ID:', docRef.id);
       Alert.alert('Issue reported successfully');
       setName('');
-      setEmail('');
       setPhone('');
       setTitle('');
       setDetails('');
     } catch (error) {
-      console.error('Error reporting issue:', error);
+      console.error('Error reporting issue:', error); // Log the error in console
       Alert.alert('Something went wrong. Please try again.');
+    } finally {
+      setLoading(false); // Set loading to false after submission is done
     }
   };
 
@@ -85,8 +102,8 @@ const IssueReporterScreen = () => {
         placeholder="Email"
         placeholderTextColor="#888"
         keyboardType="email-address"
-        value={email}
-        onChangeText={setEmail}
+        value={currentUser.email.toLowerCase()}
+        editable={false} // Make the input read-only
       />
 
       <TextInput
@@ -115,8 +132,13 @@ const IssueReporterScreen = () => {
         onChangeText={setDetails}
       />
 
-      <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-        <Text style={styles.buttonText}>Submit Issue</Text>
+      <TouchableOpacity
+        style={[styles.button, loading && {backgroundColor: '#999'}]}
+        onPress={handleSubmit}
+        disabled={loading}>
+        <Text style={styles.buttonText}>
+          {loading ? 'Submitting...' : 'Submit Issue'}
+        </Text>
       </TouchableOpacity>
     </ScrollView>
   );

@@ -10,7 +10,7 @@ const NavigationBar = ({navigation, title}) => {
         <Icon name="menu" size={28} color={colors.whiteText} />
       </TouchableOpacity>
       <Image
-        source={require('../../assets/images/justice_path_logo.png')}
+        source={require('../../assets/images/community_issue_tracker.png')}
         style={styles.logo}
         resizeMode="contain"
       />
